@@ -133,3 +133,78 @@ VALUES
 (3, 'Children Reading Program',
  'Helping children improve their reading skills through volunteer activities.',
  'Public Library', '2027-01-18');
+
+
+-- ========================================
+-- Create table: Categories
+-- ========================================
+
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- ========================================
+-- Create table: Project Categories
+-- ========================================
+
+CREATE TABLE project_categories (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+
+    PRIMARY KEY (project_id, category_id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES service_project(project_id),
+
+    FOREIGN KEY (category_id)
+        REFERENCES categories(category_id)
+);
+
+
+-- ========================================
+-- Insert sample data: Categories
+-- ========================================
+
+INSERT INTO categories (category_name)
+VALUES
+    ('Construction & Infrastructure'),
+    ('Environment & Sustainability'),
+    ('Community Support & Education');
+
+
+-- ========================================
+-- Associate Projects with Categories
+-- ========================================
+
+INSERT INTO project_categories (project_id, category_id)
+SELECT
+    sp.project_id,
+    c.category_id
+FROM (
+    VALUES
+        ('Community Park Renovation', 'Construction & Infrastructure'),
+        ('School Playground Construction', 'Construction & Infrastructure'),
+        ('Community Center Painting', 'Construction & Infrastructure'),
+        ('Public Garden Construction', 'Construction & Infrastructure'),
+        ('Public Garden Construction', 'Environment & Sustainability'),
+        ('Neighborhood Sidewalk Repair', 'Construction & Infrastructure'),
+
+        ('Urban Garden Workshop', 'Environment & Sustainability'),
+        ('Tree Planting Day', 'Environment & Sustainability'),
+        ('Community Vegetable Garden', 'Environment & Sustainability'),
+        ('Composting Education Program', 'Environment & Sustainability'),
+        ('School Gardening Project', 'Environment & Sustainability'),
+        ('School Gardening Project', 'Community Support & Education'),
+
+        ('Food Donation Campaign', 'Community Support & Education'),
+        ('Clothing Donation Drive', 'Community Support & Education'),
+        ('Elderly Care Visit', 'Community Support & Education'),
+        ('Community Cleanup', 'Community Support & Education'),
+        ('Community Cleanup', 'Environment & Sustainability'),
+        ('Children Reading Program', 'Community Support & Education')
+) AS assignments(project_title, category_name)
+INNER JOIN service_project sp
+    ON sp.title = assignments.project_title
+INNER JOIN categories c
+    ON c.category_name = assignments.category_name;
