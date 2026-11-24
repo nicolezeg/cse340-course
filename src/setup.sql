@@ -208,3 +208,19 @@ INNER JOIN service_project sp
     ON sp.title = assignments.project_title
 INNER JOIN categories c
     ON c.category_name = assignments.category_name;
+
+-- ========================================
+-- Query: Retrieve Projects, Organizations, and Categories
+-- ========================================
+
+SELECT
+    sp.title AS project_title,
+    o.name AS organization_name,
+    c.category_name
+FROM service_project sp
+INNER JOIN organization o
+    ON sp.organization_id = o.organization_id
+INNER JOIN project_categories pc
+    ON sp.project_id = pc.project_id
+INNER JOIN categories c
+    ON pc.category_id = c.category_id;
